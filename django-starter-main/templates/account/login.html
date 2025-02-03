@@ -1,0 +1,58 @@
+{% extends "account/base_entrance.html" %}
+{% load i18n %}
+{% load allauth account %}
+{% load socialaccount %}
+{% load static %}
+
+{% block content %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <h1>{% trans "Sign In" %}</h1>
+    <p>
+        If you have not created an account yet, then please
+        <a href="{% url 'account_signup' %}?next={% url 'profile-onboarding' %}">sign up</a> first.
+    </p>
+    <form method="post" action="{% url 'account_login' %}">
+        {% csrf_token %}
+        <div class="form-group">
+            <input type="text" placeholder="Username" name="login" id="id_login" required />
+        </div>
+        <div class="form-group">
+            <input type="password" name="password" id="id_password" placeholder="Password" required />
+        </div>
+        <div class="remember-forgot-container">
+            <div class="remember-me">
+                <input type="checkbox" id="remember_me" name="remember_me">
+                <label for="remember_me">{% trans "Remember Me" %}</label>
+            </div>
+            <div class="forgot-password">
+                <a href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
+            </div>
+        </div>
+        <button type="submit" class="submit-button">{% trans "Sign In" %}</button>
+    </form>
+    {% if form.errors %}
+        <div class="errorlist">
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+                <p>{{ error }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}    
+    <div class="separator">
+        <span>OR</span>
+    </div>
+    {% if SOCIALACCOUNT_ENABLED %}
+    <div class="social-login-buttons">
+        <a href="{% provider_login_url 'google' %}" class="social-button google">
+            <img src="{% static 'google_logo.ico' %}" alt="Google">
+        </a>
+        <a href="{% provider_login_url 'vk' %}" class="social-button vk">
+            <img src="{% static 'vk.ico' %}" alt="VK">
+        </a>
+    </div>
+    {% endif %}
+{% endblock content %}

@@ -1,0 +1,54 @@
+{% extends "account/base_entrance.html" %}
+{% load i18n %}
+{% load allauth account %}
+{% load socialaccount %}
+{% load static %}
+
+{% block content %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <h1>{% trans "Sign Up" %}</h1>
+    <p>
+        If you already have an account, please
+        <a href="{% url 'account_login' %}?next={% url 'profile-onboarding' %}">sign in</a> instead.
+    </p>
+    <form method="post" action="{% url 'account_signup' %}?next={% url 'profile-onboarding' %}">
+        {% csrf_token %}
+        <div class="form-group">
+            <input type="email" name="email" id="id_email" placeholder="Email" required>
+        </div>
+        <div class="form-group">
+            <input type="password" name="password1" id="id_password1" placeholder="Password" required>
+        </div>
+        <div class="form-group">
+            <input type="password" name="password2" id="id_password2" placeholder="Confirm Password" required>
+        </div>
+        <button type="submit" class="submit-button">{% trans "Sign Up" %}</button>
+    </form>
+    
+    {% if form.errors %}
+        <div class="errorlist">
+            {% for error in form.non_field_errors %}
+                <p>{{ error }}</p>
+            {% endfor %}
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            {% endfor %}
+        </div>
+    {% endif %}
+   
+    <div class="separator">
+        <span>OR</span>
+    </div>
+    {% if SOCIALACCOUNT_ENABLED %}
+    <div class="social-login-buttons">
+        <a href="{% provider_login_url 'google' %}" class="social-button google">
+            <img src="{% static 'google_logo.ico' %}" alt="Google">
+        </a>
+        <a href="{% provider_login_url 'vk' %}" class="social-button vk">
+            <img src="{% static 'vk.ico' %}" alt="VK">
+        </a>
+    </div>
+    {% endif %}
+{% endblock content %}
